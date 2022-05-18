@@ -1,0 +1,58 @@
+{
+    "name": "laravel-ready/license-connector",
+    "description": "Connector package for License Server",
+    "type": "library",
+    "license": "MIT",
+    "version": "1.0.0",
+    "keywords": [
+        "laravel",
+        "license",
+        "license-server",
+        "license-manager"
+    ],
+    "authors": [
+        {
+            "name": "EgoistDeveloper",
+            "email": "epsilonelittr@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/laravel-ready/license-server/issues",
+        "source": "https://github.com/laravel-ready/license-server"
+    },
+    "require": {
+        "php": "^8.0.2",
+        "illuminate/support": "^9.0"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.4",
+        "orchestra/testbench": "^7.0.0",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "LaravelReady\\LicenseConnector\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests"
+        }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LaravelReady\\LicenseConnector\\LicenseConnectorServiceProvider"
+            ],
+            "aliases": {
+                "LicenseConnector": "LaravelReady\\LicenseConnector\\Facades\\LicenseConnector"
+            }
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
