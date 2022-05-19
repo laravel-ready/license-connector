@@ -8,7 +8,7 @@
 [![License][badge_license]][link_license]
 
 
-License Connector is continous integration tool for [License Server](https://github.com/laravel-ready/license-connector) package. This package is using for connect your Laravel project with License Server.
+License Connector is continous integration tool for [License Server](https://github.com/laravel-ready/license-server) package. This package is using for connect your Laravel project with License Server.
 
 ## Installation (for Client App)
 
