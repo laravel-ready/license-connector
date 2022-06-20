@@ -7,8 +7,6 @@
 [![Total Downloads][badge_downloads]][link_packagist]
 [![License][badge_license]][link_license]
 
-⚠️ This package is under active development and is not yet stable. There may be some changes in later versions.
-
 License Connector is continous integration tool for [License Server](https://github.com/laravel-ready/license-server) package. This package is using for connect your Laravel project with License Server.
 
 ## Installation (for Client App)
@@ -55,9 +53,12 @@ $customData = ['email' => 'testa@example.com'];
 $isLicenseValid = $connectorService->validateLicense($customData);
 ```
 
-⚠️ Don't forget this package just provides management of licenses and server communication.
+## ⚠️ Warnings
 
-⚠️ Please don't confuse it with ioncube or similar source code encryption tools.
+- This package is under active development and is not yet stable. There may be some changes in later versions.
+- Don't forget this package just provides management of licenses and server communication.
+- Please don't confuse it with ioncube or similar source code encryption tools.
+
 
 
 [badge_downloads]:      https://img.shields.io/packagist/dt/laravel-ready/license-connector.svg?style=flat-square
