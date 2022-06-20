@@ -48,7 +48,7 @@ if ($isLicenseValid) {
 }
 ```
 
-To validating with custom data
+To passing custom data
 
 ```php
 $customData = ['email' => 'testa@example.com'];
