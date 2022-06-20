@@ -2,18 +2,60 @@
 
 namespace LaravelReady\LicenseConnector\Services;
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Http;
 
 use LaravelReady\LicenseConnector\Traits\CacheKeys;
+use LaravelReady\LicenseConnector\Exceptions\AuthException;
 
 class ConnectorService
 {
     use CacheKeys;
 
-    public function __construct()
+    public $license;
+
+    private $licenseKey;
+    private $accessToken;
+
+    public function __construct(string $licenseKey)
     {
+        $this->licenseKey = $licenseKey;
+
+        $this->accessToken = $this->getAccessToken($licenseKey);
+    }
+
+    /**
+     * Check license status
+     *
+     * @param string $licenseKey
+     * @param array $data
+     *
+     * @return boolean
+     */
+    public function validateLicense(array $data = []): bool
+    {
+        if ($this->accessToken) {
+            $url = Config::get('license-connector.license_server_url') . '/api/license-server/license';
+
+            $response = Http::withHeaders([
+                'x-host' => Config::get('app.url'),
+                'x-host-name' => Config::get('app.name'),
+                'Authorization' => "Bearer {$this->accessToken}",
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ])->post($url, $data);
+
+            if ($response->ok()) {
+                $license = $response->json();
+
+                $this->license = $license;
+
+                return $license && $license['status'] == 'active';
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -23,9 +65,9 @@ class ConnectorService
      *
      * @return string
      */
-    public static function getAccessToken(string $licenseKey): null | string
+    private function getAccessToken(string $licenseKey): null | string
     {
-        $accessTokenCacheKey = self::getAccessTokenKey($licenseKey);
+        $accessTokenCacheKey = $this->getAccessTokenKey($licenseKey);
 
         $accessToken = Cache::get($accessTokenCacheKey, null);
 
@@ -38,58 +80,28 @@ class ConnectorService
         $response = Http::withHeaders([
             'x-host' => Config::get('app.url'),
             'x-host-name' => Config::get('app.name'),
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
         ])->post($url, [
             'license_key' => $licenseKey
         ]);
 
+        $data = $response->json();
+
         if ($response->ok()) {
-            $data = $response->json();
+            if ($data['status'] === true) {
+                if (!empty($data['access_token'])) {
+                    $accessToken = $data['access_token'];
 
-            if (isset($data['status'])) {
-                if ($data['status'] === true) {
-                    if (isset($data['access_token'])) {
-                        $accessToken = $data['access_token'];
+                    Cache::put($accessTokenCacheKey, $accessToken, now()->addMinutes(60));
 
-                        Cache::put($accessTokenCacheKey, $accessToken, now()->addMinutes(60));
-
-                        return $accessToken;
-                    }
-                } else if ($data['status'] === true) {
-                    if (isset($data['message'])) {
-                        return $data['message'];
-                    }
+                    return $accessToken;
+                } else {
+                    throw new AuthException($data['message']);
                 }
             }
         }
 
-        return null;
-    }
-
-    /**
-     * Check license status
-     *
-     * @param string $licenseKey
-     *
-     * @return boolean
-     */
-    public static function validateLicense(string $licenseKey)
-    {
-        $accessToken = self::getAccessToken($licenseKey);
-
-        $url = Config::get('license-connector.license_server_url') . '/api/license-server/license';
-
-        $response = Http::withHeaders([
-            'x-host' => Config::get('app.url'),
-            'x-host-name' => Config::get('app.name'),
-            'Authorization' => 'Bearer ' . $accessToken,
-        ])->get($url);
-
-        if ($response->ok()) {
-            $data = $response->json();
-
-            return $data['status'] == 'active';
-        }
-
-        return false;
+        throw new AuthException($data['message']);
     }
 }

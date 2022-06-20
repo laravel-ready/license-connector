@@ -9,7 +9,7 @@ trait CacheKeys
      *
      * @return string
      */
-    private static function getAccessTokenKey(string $licenseKey): string
+    private function getAccessTokenKey(string $licenseKey): string
     {
         return "license-connector:access-token-{$licenseKey}";
     }

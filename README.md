@@ -37,13 +37,22 @@ use LaravelReady\LicenseConnector\Services\ConnectorService;
 ...
 
 $licenseKey = '46fad906-bc51-435f-9929-db46cb4baf13';
-$licenseStatus = ConnectorService::validateLicense($licenseKey);
+$connectorService = new ConnectorService($licenseKey);
 
-if ($liceseStatus) {
+$isLicenseValid = $connectorService->validateLicense();
+
+if ($isLicenseValid) {
     // License is valid
 } else {
     // License is invalid
 }
+```
+
+To validating with custom data
+
+```php
+$customData = ['email' => 'testa@example.com'];
+$isLicenseValid = $connectorService->validateLicense($customData);
 ```
 
 ⚠️ Don't forget this package just provides management of licenses and server communication.

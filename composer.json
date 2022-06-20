@@ -3,7 +3,7 @@
     "description": "Connector package for License Server",
     "type": "library",
     "license": "MIT",
-    "version": "1.0.1",
+    "version": "1.1.1",
     "keywords": [
         "laravel",
         "license",
