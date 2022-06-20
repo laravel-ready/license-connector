@@ -41,8 +41,12 @@ $isLicenseValid = $connectorService->validateLicense();
 
 if ($isLicenseValid) {
     // License is valid
+    echo 'License is valid';
+
+    print_r($connectorService->license);
 } else {
     // License is invalid
+    echo 'License is not valid';
 }
 ```
 
@@ -58,7 +62,6 @@ $isLicenseValid = $connectorService->validateLicense($customData);
 - This package is under active development and is not yet stable. There may be some changes in later versions.
 - Don't forget this package just provides management of licenses and server communication.
 - Please don't confuse it with ioncube or similar source code encryption tools.
-
 
 
 [badge_downloads]:      https://img.shields.io/packagist/dt/laravel-ready/license-connector.svg?style=flat-square
